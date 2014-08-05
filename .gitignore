@@ -1,3 +1,2 @@
 node_modules
-web/public/lib
-web/public/assets/js/vendor
+client/assets/js/vendor

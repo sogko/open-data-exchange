@@ -4,7 +4,8 @@
   "description": "open-data-exchange",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "nodemon server/app.js"
   },
   "repository": {
     "type": "git",
@@ -22,16 +23,17 @@
   "dependencies": {
     "arangojs-extended": "0.0.4",
     "async": "^0.9.0",
+    "connect-busboy": "0.0.1",
     "contextual-logger": "0.0.2",
     "cuid": "^1.2.4",
+    "express": "^4.7.2",
+    "express3-handlebars": "^0.5.0",
     "flat": "^1.2.1",
     "lodash": "^2.4.1",
     "node-ckan-crawler": "0.0.2",
+    "node-dir": "^0.1.5",
     "qs": "^0.6.6",
     "string": "^1.9.0",
-    "connect-busboy": "0.0.1",
-    "express": "^4.7.2",
-    "express3-handlebars": "^0.5.0",
-    "node-dir": "^0.1.5"
+    "yeoman-generator": "^0.17.2"
   }
 }
