@@ -1,0 +1,31 @@
+{
+  "name": "open-data-exchange-web",
+  "version": "0.0.0",
+  "homepage": "https://github.com/sogko/open-data-exchange",
+  "authors": [
+    "Hafiz Ismail <sgk.sprm@gmail.com>"
+  ],
+  "description": "open-data-exchange-web",
+  "main": "app.js",
+  "moduleType": [
+    "node"
+  ],
+  "license": "MIT",
+  "private": false,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "jquery": "~2.1.1",
+    "bootstrap": "~3.2.0",
+    "angularjs": "~1.2.21",
+    "lodash": "~2.4.1",
+    "async": "~0.9.0",
+    "requirejs": "~2.1.14",
+    "requirejs-domready": "~2.0.1"
+  }
+}
