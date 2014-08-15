@@ -19,8 +19,6 @@ function asyncTaskBuildClient(opts, done) {
 
   var buildConfig = configUtils.parseClientBuildConfig(config.buildClient);
 
-  console.log('buildConfig.bundles', buildConfig.bundles);
-
   if (!buildConfig.bundles) { return done(); }
 
   async.each(buildConfig.bundles, function(opts, callback) {
@@ -47,6 +45,7 @@ function asyncTaskBuildClient(opts, done) {
     }
 
     if (opts.entries) {
+
       var browserified = transform(function (filename) {
         return doBundle(filename);
       });

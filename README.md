@@ -1,7 +1,7 @@
 open-data-exchange
 ==================
 
-OpenDataExchange: A truly open, Open Data exchange
+WIP
 
 TODO:
 * Motivations
