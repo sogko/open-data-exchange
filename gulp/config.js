@@ -28,23 +28,24 @@ var files = {
     ]
   },
   tests: {
+    js: [
+      'tests/**/*.js'
+    ],
     mocha: [
-      '/tests/mocha/**/*.js'
+      'tests/mocha/**/*.js'
     ]
   },
   gulp: {
     js: ['gulp/**/*.js']
   },
-  allJS: function allJS() {
+  jsHintFiles: function jsHintFiles() {
     return this.server.js
-      .concat(this.client.js);
+      .concat(this.client.js)
+      .concat(this.tests.js)
+      .concat(files.gulp.js);
   },
-  allCSS: function allCSS() {
+  cssLintFiles: function cssLintFiles() {
     return this.client.css;
-  },
-  allViews: function allCSS() {
-    return this.server.views
-      .concat(this.client.views);
   },
   nodemonWatchFiles: function browserSyncFiles() {
     return this.server.js
@@ -52,25 +53,19 @@ var files = {
   },
   browserSyncFiles: function browserSyncFiles() {
     // preferably file that can be injected or does not require a build
-    return this.allCSS()
-      .concat(this.allViews());
-  },
-  all: function all() {
-    return this.allJS()
-      .concat(this.allCSS())
-      .concat(this.allViews())
-      .concat(this.client.dist);
+    return this.client.css
+      .concat(this.client.views)
+      .concat(this.server.views);
   }
 };
 
 module.exports = {
   files: files,
   jshint: {
-    glob: files.allJS()
-      .concat(files.gulp.js)
+    glob: files.jsHintFiles()
   },
   csslint:{
-    glob: files.allCSS()
+    glob: files.cssLintFiles()
   },
   browserSync: {
     files: files.browserSyncFiles(),

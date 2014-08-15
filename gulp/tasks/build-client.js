@@ -94,7 +94,6 @@ gulp.task('build-client:development', function (done) {
   }, done);
 });
 gulp.task('build-client:production', function (done) {
-
   asyncTaskBuildClient({
     env: 'production'
   }, done);
