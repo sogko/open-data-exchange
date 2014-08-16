@@ -18,7 +18,6 @@ gulp.task('jshint', function taskJSHint() {
     .pipe(jshintTasks());
 });
 
-
 gulp.task('jshint:watch', function taskJSHint() {
   watch({
     glob: config.jshint.glob,

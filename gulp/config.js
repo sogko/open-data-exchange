@@ -1,6 +1,13 @@
 'use strict';
 
 var files = {
+  root: {
+    js: [
+      'gulpfile.js',
+      'karma.common.conf.js',
+      'karma.conf.js'
+    ]
+  },
   server: {
     views: [
       'server/views/**/*.*'
@@ -42,7 +49,8 @@ var files = {
     return this.server.js
       .concat(this.client.js)
       .concat(this.tests.js)
-      .concat(files.gulp.js);
+      .concat(this.gulp.js)
+      .concat(this.root.js);
   },
   cssLintFiles: function cssLintFiles() {
     return this.client.css;
@@ -78,5 +86,6 @@ module.exports = {
     script: 'server/app.js',
     watch: files.nodemonWatchFiles()
   },
-  buildClient: require('../client/config').build || {}
+  buildClient: require('../client/config').build || {},
+  karma: require('../karma.common.conf')
 };

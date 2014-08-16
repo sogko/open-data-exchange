@@ -8,7 +8,8 @@ var gulp = require('gulp');
   'nodemon',
   'csslint',
   'jshint',
-  'build-client'
+  'build-client',
+  'test'
 
 ].forEach(function (name) {
     require('./gulp/tasks/' + name);
@@ -18,4 +19,5 @@ gulp.task('lint', ['jshint', 'csslint']);
 gulp.task('lint:watch', ['jshint:watch', 'csslint:watch']);
 gulp.task('build', ['build-client']);
 gulp.task('build:production', ['build-client:production']);
-gulp.task('default', ['lint:watch', 'build', 'nodemon', 'browser-sync']);
+gulp.task('tdd', ['lint:watch', 'test:watch']);
+gulp.task('default', ['build', 'tdd', 'nodemon', 'browser-sync']);
