@@ -7,7 +7,7 @@ module.exports = {
 
   exclude: [
   ],
-  reporters: ['progress'],
+  reporters: ['mocha'],
   port: 9876,
   colors: true,
   logLevel: 'INFO',
