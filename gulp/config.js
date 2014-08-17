@@ -36,10 +36,8 @@ var files = {
   },
   tests: {
     js: [
-      'tests/**/*.js'
-    ],
-    mocha: [
-      'tests/mocha/**/*.js'
+      'tests/**/*.js',
+      '!tests/build/**/*.js'
     ]
   },
   gulp: {
@@ -87,5 +85,9 @@ module.exports = {
     watch: files.nodemonWatchFiles()
   },
   buildClient: require('../client/config').build || {},
-  karma: require('../karma.common.conf')
+  karma: {
+    unit: require('../tests/karma.unit.conf'),
+    midway: require('../tests/karma.midway.conf'),
+    e2e: require('../tests/karma.e2e.conf')
+  }
 };

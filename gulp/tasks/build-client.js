@@ -1,6 +1,7 @@
 'use strict';
 
 var gulp = require('gulp');
+var _ = require('lodash');
 var path = require('path');
 var async = require('async');
 var concat = require('gulp-concat');
@@ -14,14 +15,30 @@ var config = require('../config');
 
 function asyncTaskBuildClient(opts, done) {
 
-  if (!opts) { opts = {}; }
-  opts.env = opts.env || 'development';
+  if (typeof opts === 'function') {
+    done = opts;
+    opts = {};
+  }
 
-  var buildConfig = configUtils.parseClientBuildConfig(config.buildClient);
+  var buildConfig = _.assign(
+    {
+      baseDir: process.cwd(),
+      destDir: path.join(process.cwd(), 'build'),
+      env: 'development',
+      skipBundles: []
+    },
+    configUtils.parseClientBuildConfig(config.buildClient),
+    opts
+  );
 
   if (!buildConfig.bundles) { return done(); }
 
   async.each(buildConfig.bundles, function(opts, callback) {
+
+    // skip bundles
+    if (_.indexOf(buildConfig.skipBundles, opts.name) > -1) {
+      return callback();
+    }
 
     var outputName = opts.name + '.js';
 
@@ -83,16 +100,20 @@ function asyncTaskBuildClient(opts, done) {
   });
 }
 
-gulp.task('build-client', function (done) {
-  asyncTaskBuildClient({
-    env: 'development'
-  }, done);
-});
+gulp.task('build-client', ['build-client:development']);
+
 gulp.task('build-client:development', function (done) {
+  asyncTaskBuildClient(done);
+});
+
+gulp.task('build-client:test', function (done) {
   asyncTaskBuildClient({
-    env: 'development'
+    env: 'test',
+    destDir: 'tests/build/client/dist/js',
+    skipBundles: ['common', 'apps']
   }, done);
 });
+
 gulp.task('build-client:production', function (done) {
   asyncTaskBuildClient({
     env: 'production'
