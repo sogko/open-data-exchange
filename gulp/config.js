@@ -1,80 +1,42 @@
 'use strict';
 
-var files = {
-  root: {
-    js: [
-      'gulpfile.js',
-      'karma.common.conf.js',
-      'karma.conf.js'
-    ]
-  },
-  server: {
-    views: [
-      'server/views/**/*.*'
+var _ = require('lodash');
+var configUtils = require('./utils/config-utils');
+var baseBuildClientConfig = configUtils.parseClientBuildConfig(require('../client/config').build);
+
+module.exports = {
+  sass: {
+    glob: [
+      'client/src/**/*.scss'
     ],
-    js: [
-      'server/**/*.js'
-    ]
+    // temporary intermediate folder for compiled files ready for build
+    dest: 'client/src/compiled/sass'
   },
-  client: {
-    dist: ['client/dist/js/app.js'],
-    entryPoint: 'client/app.js',
-    views: [
-      'client/apps/**/partials/**/*.html'
-    ],
-    js: [
-      'client/*.js',
-      'client/apps/**/*.js',
-      'client/assets/js/lib/**/*.js',
-      '!client/assets/js/vendor/**/*.js',
-      '!client/dist/js/*.js'
-    ],
-    vendor: ['client/assets/js/vendor/**/*.js'],
-    css: [
-      'client/assets/css/**/*.css'
-    ]
-  },
-  tests: {
-    js: [
+  jshint: {
+    glob: [
+      '*.js',
+      'bin/**/*.js',
+      'client/**/*.js',
+      '!client/dist/**/*.js',
+      'gulp/**/*.js',
+      'server/**/*.js',
       'tests/**/*.js',
       '!tests/build/**/*.js'
     ]
   },
-  gulp: {
-    js: ['gulp/**/*.js']
-  },
-  jsHintFiles: function jsHintFiles() {
-    return this.server.js
-      .concat(this.client.js)
-      .concat(this.tests.js)
-      .concat(this.gulp.js)
-      .concat(this.root.js);
-  },
-  cssLintFiles: function cssLintFiles() {
-    return this.client.css;
-  },
-  nodemonWatchFiles: function browserSyncFiles() {
-    return this.server.js
-      .concat(this.client.js);
-  },
-  browserSyncFiles: function browserSyncFiles() {
-    // preferably file that can be injected or does not require a build
-    return this.client.css
-      .concat(this.client.views)
-      .concat(this.server.views);
-  }
-};
-
-module.exports = {
-  files: files,
-  jshint: {
-    glob: files.jsHintFiles()
-  },
-  csslint:{
-    glob: files.cssLintFiles()
+  csslint: {
+    glob: [
+      'client/src/**/*.css',
+      '!client/src/compiled/*.css',
+      'client/dist/**/*.css'
+    ]
   },
   browserSync: {
-    files: files.browserSyncFiles(),
+    files: [
+      'client/dist/**/*.css',
+      'client/dist/**/*.html',
+      'server/views/**/*.*'
+    ],
     proxy: 'http://localhost:3000',
     browser: ['google chrome'],
     port: 4000,
@@ -82,12 +44,47 @@ module.exports = {
   },
   nodemon: {
     script: 'server/app.js',
-    watch: files.nodemonWatchFiles()
+    watch: [
+      'server/**/*.js'
+    ]
   },
-  buildClient: require('../client/config').build || {},
+  buildClient: {
+    development: _.assign({}, baseBuildClientConfig, {
+      env: 'development',
+      watch: [
+        'client/src/**/*.js'
+      ]
+    }),
+    production: _.assign({}, baseBuildClientConfig, {
+      env: 'production'
+    }),
+    test: _.assign({}, baseBuildClientConfig, {
+      env: 'test',
+      destDir: 'tests/build/client/dist/js',
+      skipBundles: ['common']
+    })
+  },
+  buildCSS: {
+    glob: [
+      'client/src/**/*.css',
+      'client/src/compiled/**/*.css'
+    ],
+    filename: 'all.css',
+    dest: 'client/dist'
+  },
   karma: {
     unit: require('../tests/karma.unit.conf'),
     midway: require('../tests/karma.midway.conf'),
     e2e: require('../tests/karma.e2e.conf')
+  },
+  copyStaticAssets: {
+    glob: [
+      'client/src/static/**/*',
+      'client/src/**/*.html',
+      '!client/src/**/*.md',
+      '!client/src/**/*.scss',
+      '!client/src/**/*.css' // would be handled by build-cssx
+    ],
+    dest: './client/dist'
   }
 };
