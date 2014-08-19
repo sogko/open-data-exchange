@@ -26,7 +26,9 @@ gulp.task('sass', function sassTask() {
 gulp.task('sass:watch', function sassTaskWatch() {
   watch({
     name: 'sass-changed',
-    glob: config.sass.glob
+    glob: config.sass.glob,
+    emitOnGlob: false,
+    emit: 'one'
   }, function (files) {
     return files
       .pipe(sassTasks());

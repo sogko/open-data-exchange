@@ -8,10 +8,7 @@ var CleanCSS = require('clean-css');
 var map = require('vinyl-map');
 var config = require('../config');
 
-/**
- * Build minified + concatenated css using `clean-css`
- */
-gulp.task('build-css', function buildCSSTask() {
+function taskMinify() {
   var minify = map(function (code) {
     code = code.toString();
     return new CleanCSS({
@@ -24,14 +21,25 @@ gulp.task('build-css', function buildCSSTask() {
     .pipe(concat(config.buildCSS.filename))
     .pipe(minify)
     .pipe(gulp.dest(config.buildCSS.dest));
+}
+
+/**
+ * Build minified + concatenated css using `clean-css`
+ */
+gulp.task('build-css', ['copy-static-assets'], function buildCSSTask() {
+  return taskMinify();
 });
 
 /**
  * Watch and re-build minified+concatenated css if there is any changes in css files
+ *
+ * Note: that `build-css` depends on `copy-static-assets`, while `build-css:watch` does not
  */
 gulp.task('build-css:watch', function buildCSSTaskWatch() {
 
-  gulp.watch(config.buildCSS.glob, ['build-css'])
+  gulp.watch(config.buildCSS.glob, function () {
+    taskMinify();
+  })
     .on('change', function (event) {
       gutil.log(gutil.colors.cyan('build-css-changed'), 'saw', gutil.colors.magenta(path.basename(event.path)), 'was', event.type);
     });

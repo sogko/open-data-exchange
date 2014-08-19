@@ -12,7 +12,7 @@ var copyAssetsTasks = lazypipe()
  * Copy asset files (html, images or any files in client/src/static folder) to client/dist/static
  * This allows us to server static files separately from runtime server code
  */
-gulp.task('copy-static-assets', function taskCopyAssets() {
+gulp.task('copy-static-assets', ['sass'], function taskCopyAssets() {
   return gulp.src(config.copyStaticAssets.glob)
     .pipe(copyAssetsTasks());
 });
@@ -23,7 +23,9 @@ gulp.task('copy-static-assets', function taskCopyAssets() {
 gulp.task('copy-static-assets:watch', function taskCopyAssetsWatch() {
   watch({
     glob: config.copyStaticAssets.glob,
-    name: 'copy-static-assets-changed'
+    name: 'copy-static-assets-changed',
+    emitOnGlob: false,
+    emit: 'one'
   }, function (files) {
     return files
       .pipe(copyAssetsTasks());

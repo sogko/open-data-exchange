@@ -26,7 +26,9 @@ gulp.task('csslint', function taskCSSLint() {
 gulp.task('csslint:watch', function taskCSSLintWatch() {
   watch({
     name: 'csslint-changed',
-    glob: config.csslint.glob
+    glob: config.csslint.glob,
+    emitOnGlob: true,
+    emit: 'one'
   }, function (files) {
     return files
       .pipe(csslintTasks());

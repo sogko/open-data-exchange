@@ -10,7 +10,7 @@ module.exports = {
       'client/src/**/*.scss'
     ],
     // temporary intermediate folder for compiled files ready for build
-    dest: 'client/src/compiled/sass'
+    dest: 'client/pre-dist/sass'
   },
   jshint: {
     glob: [
@@ -27,8 +27,9 @@ module.exports = {
   csslint: {
     glob: [
       'client/src/**/*.css',
-      '!client/src/compiled/*.css',
-      'client/dist/**/*.css'
+      '!client/pre-dist/**/*.css',
+      'client/dist/**/*.css',
+      '!client/dist/all.css'   // minified css bundle
     ]
   },
   browserSync: {
@@ -67,7 +68,7 @@ module.exports = {
   buildCSS: {
     glob: [
       'client/src/**/*.css',
-      'client/src/compiled/**/*.css'
+      'client/pre-dist/**/*.css'
     ],
     filename: 'all.css',
     dest: 'client/dist'
@@ -86,5 +87,12 @@ module.exports = {
       '!client/src/**/*.css' // would be handled by build-cssx
     ],
     dest: './client/dist'
+  },
+  clean: {
+    glob: [
+      'client/pre-dist/',
+      'client/dist/',
+      'tests/build/'
+    ]
   }
 };
