@@ -2,6 +2,5 @@ node_modules
 bower_components
 temp
 client/dist
-client/src/compiled
 tests/build
 client/pre-dist
