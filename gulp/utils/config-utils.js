@@ -15,6 +15,7 @@ function parseClientBuildBundlesConfig(baseDir, opts) {
     var req = [];
     var external = [];
     var entries = [];
+    var transform = [];
 
     if (!bundleOpts.name) { return; }
 
@@ -27,6 +28,19 @@ function parseClientBuildBundlesConfig(baseDir, opts) {
     _.forEach(bundleOpts.entries, function (e) {
       if (!e) { return; }
       entries.push(path.join(baseDir, e));
+    });
+
+    // handle transform[]
+    if (bundleOpts.transform && !_.isArray(bundleOpts.transform)) {
+      bundleOpts.transform = [bundleOpts.transform];
+    }
+    _.forEach(bundleOpts.transform, function (t) {
+      if (!t || !t.fn) { return; }
+      t.opts = t.opts || {};
+      transform.push({
+        fn: t.fn,
+        opts: t.opts
+      });
     });
 
     // handle require[]
@@ -86,7 +100,8 @@ function parseClientBuildBundlesConfig(baseDir, opts) {
       entries: entries,
       concat: bundleOpts.concat,
       require: req,
-      external: external
+      external: external,
+      transform: transform
     });
   });
 

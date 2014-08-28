@@ -1,9 +1,5 @@
 'use strict';
 
-var _ = require('lodash');
-var configUtils = require('./utils/config-utils');
-var baseBuildClientConfig = configUtils.parseClientBuildConfig(require('../client/config').build);
-
 module.exports = {
   sass: {
     glob: [
@@ -18,6 +14,7 @@ module.exports = {
       'bin/**/*.js',
       'client/**/*.js',
       '!client/dist/**/*.js',
+      '!client/src/static/vendor/**/*.js',
       'gulp/**/*.js',
       'server/**/*.js',
       'tests/**/*.js',
@@ -27,8 +24,10 @@ module.exports = {
   csslint: {
     glob: [
       'client/src/**/*.css',
+      '!client/src/static/vendor/**/*.css',
       '!client/pre-dist/**/*.css',
       'client/dist/**/*.css',
+      '!client/dist/vendor/**/*.css',
       '!client/dist/all.css'   // minified css bundle
     ]
   },
@@ -50,20 +49,22 @@ module.exports = {
     ]
   },
   buildClient: {
-    development: _.assign({}, baseBuildClientConfig, {
+    base: require('../client/config').build,
+    development: {
       env: 'development',
       watch: [
         'client/src/**/*.js'
-      ]
-    }),
-    production: _.assign({}, baseBuildClientConfig, {
+      ],
+      skipBundles: ['common']
+    },
+    production: {
       env: 'production'
-    }),
-    test: _.assign({}, baseBuildClientConfig, {
+    },
+    test: {
       env: 'test',
       destDir: 'tests/build/client/dist/js',
       skipBundles: ['common']
-    })
+    }
   },
   buildCSS: {
     glob: [
@@ -83,8 +84,7 @@ module.exports = {
       'client/src/static/**/*',
       'client/src/**/*.html',
       '!client/src/**/*.md',
-      '!client/src/**/*.scss',
-      '!client/src/**/*.css' // would be handled by build-cssx
+      '!client/src/**/*.scss'
     ],
     dest: './client/dist'
   },

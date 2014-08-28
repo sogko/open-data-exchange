@@ -14,6 +14,9 @@ var transform = require('vinyl-transform');
 var browserify = require('browserify');
 var config = require('../config');
 
+var configUtils = require('../utils/config-utils');
+var baseBuildClientConfig = configUtils.parseClientBuildConfig(config.buildClient.base);
+
 function asyncTaskBuildClient(_config, done) {
 
   if (typeof _config === 'function') {
@@ -51,6 +54,10 @@ function asyncTaskBuildClient(_config, done) {
       if (opts.entries) {
 
       }
+
+      opts.transform.forEach(function (t) {
+        b.transform(t.fn, t.opts);
+      });
 
       opts.require.forEach(function (req) {
         b.require(req.location, { expose: req.expose });
@@ -140,20 +147,20 @@ gulp.task('build-client:development:watch', function () {
  * Build client bundles in development environment
  */
 gulp.task('build-client:development', function (done) {
-  asyncTaskBuildClient(config.buildClient.development, done);
+  asyncTaskBuildClient(_.assign({}, baseBuildClientConfig, config.buildClient.development), done);
 });
 
 /**
  * Build client bundles in test environment
  */
 gulp.task('build-client:test', function (done) {
-  asyncTaskBuildClient(config.buildClient.test, done);
+  asyncTaskBuildClient(_.assign({}, baseBuildClientConfig, config.buildClient.test), done);
 });
 
 /**
  * Build client bundles in production environment
  */
 gulp.task('build-client:production', function (done) {
-  asyncTaskBuildClient(config.buildClient.production, done);
+  asyncTaskBuildClient(_.assign({}, baseBuildClientConfig, config.buildClient.production), done);
 
 });
