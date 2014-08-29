@@ -12,15 +12,17 @@ var mapper = resourceMapper(router);
 router.use('/crawled', new ArangoGenericQueryFilter('c'));
 
 // map collection to RESTful APIs
-mapper.collection('crawled', {
+var crawled = mapper.collection('crawled', {
 
   // GET /crawled
   list: function (req, res) {
+
     var opts = req.search;
     Crawled.list(opts, function (err, results) {
       res.json(results);
     });
   },
+
   // GET /crawled/:id
   show: function (req, res) {
     var id = req.param('id');
@@ -31,4 +33,27 @@ mapper.collection('crawled', {
 
 });
 
+crawled.collection('revisions', {
+
+  // GET /crawled/:id/revisions
+  list: function (req, res) {
+    var id = req.param('id');
+    var opts = {};
+    Crawled.getRevisions(id, opts, function (err, results) {
+      res.json(results);
+    });
+  },
+
+  // GET /crawled/:id/revisions/:revisionKey
+  show: function (req, res) {
+    var revisionKey = req.param('revisionKey');
+    console.log('revisionKey', revisionKey);
+    Crawled.getRevision(revisionKey, function (err, results) {
+      res.json(results);
+    });
+  }
+
+}, {
+  idParamName: ':revisionKey'
+});
 module.exports = router;

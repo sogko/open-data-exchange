@@ -14,11 +14,11 @@ function Crawled(obj) {
   this._id = obj._id;
   this._key = obj._key;
   this._rev = obj._rev;
-  this.externalId = obj.external_id;
-  this.rawData = obj.raw_data;
-  this.sourceType = obj.source_type;
-  this.sourceHost = obj.source_host;
-  this.sourceUri = obj.source_uri;
+  this.external_id = obj.external_id;
+  this.raw_data = obj.raw_data;
+  this.source_type = obj.source_type;
+  this.source_host = obj.source_host;
+  this.source_uri = obj.source_uri;
 }
 
 Crawled.get = function (id, cb) {
@@ -31,6 +31,34 @@ Crawled.get = function (id, cb) {
   });
 };
 
+Crawled.getRevisions = function (id, opts, cb) {
+  opts = _.assign({}, opts);
+
+  db.revision.list(COLLECTION_NAME + '/' + id, opts, function (err, res) {
+
+    var objs = (err) ? null : [];
+    _.forEach(res.result, function (row) {
+      if (objs && row) { objs.push(row); }
+    });
+
+    cb(err, {
+      revisions: objs,
+      meta: {
+        count: -1,
+        error: res.error,
+        code: res.code,
+        hasMore: res.hasMore,
+        query: opts
+      }
+    });
+
+  });
+};
+Crawled.getRevision = function (revisionKey, cb) {
+  db.revision.get(COLLECTION_NAME, revisionKey, function (err, res) {
+    cb(err, res);
+  });
+};
 /**
  * list is a static factory method that retrieves a list of Crawled document objects
  * @param opts
@@ -38,14 +66,11 @@ Crawled.get = function (id, cb) {
  */
 Crawled.list = function (opts, cb) {
 
-  var options = _.assign({}, opts);
-
-  var filters = options.filters;
-  var query = options.arangoQuery;
+  opts = _.assign({}, opts);
 
   var data = _.merge({
     '@collectionName': COLLECTION_NAME
-  }, filters.data);
+  }, opts.filters.data);
 
   async.series([
     function countDocuments(next) {
@@ -54,7 +79,7 @@ Crawled.list = function (opts, cb) {
       });
     },
     function executeQuery(next) {
-      db.query.exec(query, data, function (err, res) {
+      db.query.exec(opts.arangoQuery, data, function (err, res) {
         next(err, res);
       });
     }
@@ -65,16 +90,15 @@ Crawled.list = function (opts, cb) {
 
     var count = results[0].count || 0;
     var res = results[1];
-    res.data = data;
-    res.query = query;
     if (err && res.errorNum === 1501) {
       res.errorMessage = 'Invalid query';
     }
     var objs = (err) ? null : [];
     _.forEach(res.result, function (row) {
       var obj = new Crawled(row);
-      if (objs && obj && obj._id) { objs.push(obj); }
+      if (objs && obj) { objs.push(obj); }
     });
+
     cb(err, {
       crawled: objs,
       meta: {
@@ -82,7 +106,7 @@ Crawled.list = function (opts, cb) {
         error: res.error,
         code: res.code,
         hasMore: res.hasMore,
-        queryOptions: options
+        query: opts
       }
     });
   });
