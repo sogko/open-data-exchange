@@ -14,28 +14,41 @@ function Crawled(obj) {
   this._id = obj._id;
   this._key = obj._key;
   this._rev = obj._rev;
-  this.external_id = obj.external_id;
-  this.raw_data = obj.raw_data;
-  this.source_type = obj.source_type;
-  this.source_host = obj.source_host;
-  this.source_uri = obj.source_uri;
+  this._revisionKey = obj._revisionKey || 'latest';
+  this.externalId = obj.externalId;
+  this.sourceType = obj.sourceType;
+  this.sourceHost = obj.sourceHost;
+  this.sourceUri = obj.sourceUri;
+  this.rawData = obj.rawData;
 }
 
 Crawled.get = function (id, cb) {
-  db.trackedDocument.get(COLLECTION_NAME + '/' + id, function (err, res) {
-    var obj = res;
-    if (!err) {
-      obj = new Crawled(res);
+  async.parallel([
+    function getDocument(next) {
+      db.trackedDocument.get(COLLECTION_NAME + '/' + id, function (err, res) {
+        next(err, res);
+      });
+    },
+    function getLatestRevisionKey(next) {
+      db.revision.latest(COLLECTION_NAME + '/' + id, function (err, res) {
+        next(err, res);
+      });
     }
-    cb(err, obj);
+  ], function (err, res) {
+    var obj = res[0];
+    if (!err) {
+      obj = new Crawled(obj);
+      obj._revisionKey = res[1].rev;
+    }
+    cb(null, obj);
   });
+
 };
 
 Crawled.getRevisions = function (id, opts, cb) {
   opts = _.assign({}, opts);
 
   db.revision.list(COLLECTION_NAME + '/' + id, opts, function (err, res) {
-
     var objs = (err) ? null : [];
     _.forEach(res.result, function (row) {
       if (objs && row) { objs.push(row); }
@@ -54,10 +67,20 @@ Crawled.getRevisions = function (id, opts, cb) {
 
   });
 };
-Crawled.getRevision = function (revisionKey, cb) {
-  db.revision.get(COLLECTION_NAME, revisionKey, function (err, res) {
-    cb(err, res);
-  });
+Crawled.getRevision = function (documentId, revisionKey, cb) {
+  if (revisionKey === 'latest') {
+    Crawled.get(documentId, cb);
+  } else {
+    db.revision.get(COLLECTION_NAME, revisionKey, function (err, res) {
+      var obj = res;
+      if (!err) {
+        res._revisionKey = revisionKey;
+        obj = new Crawled(res);
+      }
+      cb(err, obj);
+    });
+  }
+
 };
 /**
  * list is a static factory method that retrieves a list of Crawled document objects
@@ -73,23 +96,23 @@ Crawled.list = function (opts, cb) {
   }, opts.filters.data);
 
   async.series([
-    function countDocuments(next) {
-      Crawled.count(function (err, res) {
+    function executeQuery(next) {
+      db.query.exec(opts.arangoQuery, data, function (err, res) {
         next(err, res);
       });
     },
-    function executeQuery(next) {
-      db.query.exec(opts.arangoQuery, data, function (err, res) {
+    function countDocuments(next) {
+      Crawled.count(function (err, res) {
         next(err, res);
       });
     }
   ], function (err, results) {
     if (err) {
-      return cb(err, null);
+      return cb(err, results[results.length - 1]);
     }
 
-    var count = results[0].count || 0;
-    var res = results[1];
+    var res = results[0];
+    var count = results[1].count || 0;
     if (err && res.errorNum === 1501) {
       res.errorMessage = 'Invalid query';
     }

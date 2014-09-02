@@ -34,7 +34,6 @@ var crawled = mapper.collection('crawled', {
 });
 
 crawled.collection('revisions', {
-
   // GET /crawled/:id/revisions
   list: function (req, res) {
     var id = req.param('id');
@@ -46,9 +45,9 @@ crawled.collection('revisions', {
 
   // GET /crawled/:id/revisions/:revisionKey
   show: function (req, res) {
+    var id = req.param('id');
     var revisionKey = req.param('revisionKey');
-    console.log('revisionKey', revisionKey);
-    Crawled.getRevision(revisionKey, function (err, results) {
+    Crawled.getRevision(id, revisionKey, function (err, results) {
       res.json(results);
     });
   }
