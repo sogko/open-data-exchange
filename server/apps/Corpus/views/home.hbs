@@ -1,0 +1,22 @@
+<div data-ui-view class="container-fluid app-Corpus">
+    Loading Corpus...
+</div>
+<!--
+/**
+* Bootstraps Angular app Corpus onto the window.document node.
+*
+* NOTE: the ng-app attribute should not be on the index.html when using ng.bootstrap
+*/
+-->
+<script src="/static/apps/Corpus/app.js"></script>
+
+<script type="text/javascript">
+'use strict';
+try {
+    angular.element(document).ready(function() {
+        angular.bootstrap(document, ['Corpus']);
+    });
+} catch (e) {
+    console.error(e.message);
+}
+</script>
