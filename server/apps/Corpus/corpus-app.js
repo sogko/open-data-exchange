@@ -17,12 +17,12 @@ module.exports = function (parent) {
   app.set('strict routing', parent.get('strict routing'));
 
   // handle non-trailing-slash routes
-  app.all('/Crawled', function (req, res) {
-    res.redirect('/Crawled/');
+  app.all('/Corpus', function (req, res) {
+    res.redirect('/Corpus/');
   });
 
   //mount router
-  app.use('/Crawled/', router);
+  app.use('/Corpus/', router);
 
   return app;
 };
