@@ -29,6 +29,6 @@ gulp.task('build:watch', ['lint:watch', 'sass:watch', 'copy-static-assets:watch'
 gulp.task('build:production', ['build-client:production']);
 
 gulp.task('tdd', ['lint:watch', 'test:watch']);
-gulp.task('default', ['build', 'nodemon', 'browser-sync', 'build:watch']);
 gulp.task('watch', ['build:watch']);
+gulp.task('default', ['build', 'nodemon', 'browser-sync', 'build:watch']);
 

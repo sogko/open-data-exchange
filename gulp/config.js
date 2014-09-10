@@ -35,7 +35,8 @@ module.exports = {
     files: [
       'client/dist/**/*.css',
       'client/dist/**/*.html',
-      'server/views/**/*.*'
+      'server/**/*.hbs',
+      'server/**/*.html'
     ],
     proxy: 'http://localhost:3000',
     browser: ['google chrome'],
@@ -53,7 +54,8 @@ module.exports = {
     development: {
       env: 'development',
       watch: [
-        'client/src/**/*.js'
+        'client/src/**/*.js',
+        'client/src/**/*.jsx'
       ],
       skipBundles: ['common']
     },
@@ -69,7 +71,8 @@ module.exports = {
   buildCSS: {
     glob: [
       'client/src/**/*.css',
-      'client/pre-dist/**/*.css'
+      'client/pre-dist/**/*.css',
+      '!client/src/static/vendor/**/*.css'
     ],
     filename: 'all.css',
     dest: 'client/dist'

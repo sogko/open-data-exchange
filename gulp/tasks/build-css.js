@@ -7,14 +7,22 @@ var gutil = require('gulp-util');
 var CleanCSS = require('clean-css');
 var map = require('vinyl-map');
 var config = require('../config');
+var autoprefixer = require('autoprefixer-core');
 
-function taskMinify() {
-  var minify = map(function (code) {
-    code = code.toString();
+function taskProcessCSS() {
+  var minify = map(function (buf) {
+
+    // convert buffer to string (css)
+    var css = buf.toString();
+
+    // auto-prefix css
+    var prefixed = autoprefixer.process(css).css;
+
+    // minify
     return new CleanCSS({
       keepSpecialComments: 0,
       keepBreaks: false
-    }).minify(code);
+    }).minify(prefixed);
   });
 
   return gulp.src(config.buildCSS.glob)
@@ -27,7 +35,7 @@ function taskMinify() {
  * Build minified + concatenated css using `clean-css`
  */
 gulp.task('build-css', ['copy-static-assets'], function buildCSSTask() {
-  return taskMinify();
+  return taskProcessCSS();
 });
 
 /**
@@ -38,7 +46,7 @@ gulp.task('build-css', ['copy-static-assets'], function buildCSSTask() {
 gulp.task('build-css:watch', function buildCSSTaskWatch() {
 
   gulp.watch(config.buildCSS.glob, function () {
-    taskMinify();
+    taskProcessCSS();
   })
     .on('change', function (event) {
       gutil.log(gutil.colors.cyan('build-css-changed'), 'saw', gutil.colors.magenta(path.basename(event.path)), 'was', event.type);
