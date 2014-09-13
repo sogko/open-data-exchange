@@ -34,7 +34,8 @@
     "afterEach",
     "it",
     "inject",
-    "expect"
+    "expect",
+    "toString"
   ],
   "white": true,
   "devel": false,
