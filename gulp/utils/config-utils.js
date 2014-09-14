@@ -17,7 +17,9 @@ function parseClientBuildBundlesConfig(baseDir, opts) {
     var entries = [];
     var transform = [];
 
-    if (!bundleOpts.name) { return; }
+    if (!bundleOpts.name) {
+      return;
+    }
 
     bundleOpts.concat = (bundleOpts.concat !== false);
 
@@ -26,7 +28,9 @@ function parseClientBuildBundlesConfig(baseDir, opts) {
       bundleOpts.entries = [bundleOpts.entries];
     }
     _.forEach(bundleOpts.entries, function (e) {
-      if (!e) { return; }
+      if (!e) {
+        return;
+      }
       entries.push(path.join(baseDir, e));
     });
 
@@ -35,11 +39,15 @@ function parseClientBuildBundlesConfig(baseDir, opts) {
       bundleOpts.transform = [bundleOpts.transform];
     }
     _.forEach(bundleOpts.transform, function (t) {
-      if (!t || !t.fn) { return; }
+      if (!t || !t.fn) {
+        return;
+      }
       t.opts = t.opts || {};
+      t.fnOpts = t.fnOpts || {};
       transform.push({
+        opts: t.opts,
         fn: t.fn,
-        opts: t.opts
+        fnOpts: t.fnOpts
       });
     });
 
@@ -55,7 +63,9 @@ function parseClientBuildBundlesConfig(baseDir, opts) {
       bundleOpts.require = [bundleOpts.require];
     }
     _.forEach(bundleOpts.require, function (r) {
-      if (!r.name) { return; }
+      if (!r.name) {
+        return;
+      }
 
       var type = (r.type || 'default').toLowerCase();
       var name = r.name;
@@ -91,7 +101,9 @@ function parseClientBuildBundlesConfig(baseDir, opts) {
       } else if (_.isString(ext) && _.indexOf(bundleNames, ext) <= -1) {
         ext = { type: 'module', name: ext };
       }
-      if (!ext.name) { return; }
+      if (!ext.name) {
+        return;
+      }
       external.push({ type: ext.type || 'module', name: ext.name });
     });
 
@@ -113,7 +125,7 @@ function parseClientBuildBundlesConfig(baseDir, opts) {
     var external = [];
     _.forEach(b.external, function (ext) {
       if (ext.type === 'bundle' && bundleNames.indexOf(ext.name) > -1) {
-        _.forEach(bundles[bundleNames.indexOf(ext.name)].require, function(req) {
+        _.forEach(bundles[bundleNames.indexOf(ext.name)].require, function (req) {
           external.push(req.expose);
         });
       } else if (ext.type === 'module') {

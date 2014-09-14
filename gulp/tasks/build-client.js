@@ -56,7 +56,7 @@ function asyncTaskBuildClient(_config, done) {
       }
 
       opts.transform.forEach(function (t) {
-        b.transform(t.fn, t.opts);
+        b.transform(t.opts, t.fn, t.fnOpts);
       });
 
       opts.require.forEach(function (req) {

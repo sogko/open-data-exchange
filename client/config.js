@@ -2,7 +2,6 @@
 
 module.exports = {
   build: {
-
     baseDir: __dirname,
     destDir: 'dist',
     bundles: [
@@ -14,16 +13,27 @@ module.exports = {
           { type: 'bower', name: 'angular-resource'},
           { type: 'bower', name: 'angular-bootstrap'},
           { type: 'bower', name: 'react', location: '../bower_components/react/react-with-addons.js'},
+          { type: 'bower', name: 'ngReactGrid' },
           { type: 'npm', name: 'lodash' },
           { type: 'npm', name: 'url' },
-          { type: 'npm', name: 'path' }
+          { type: 'npm', name: 'path' },
+          { type: 'default', name: 'humanable-json', location: './src/components/humanable-json/humanable-json' },
+          { type: 'default', name: 'faceted-search', location: './src/components/faceted-search/faceted-search' }
         ],
         transform: [
           {
+            opts: {},
             fn: 'browserify-shim',
-            opts: {
+            fnOpts: {
               'angular-resource': 'angular-resource'
             }
+          },
+          {
+            opts: {
+              global: true
+            },
+            fn: 'reactify',
+            fnOpts: {}
           }
         ]
       },
@@ -34,8 +44,9 @@ module.exports = {
         external: ['common'],
         transform: [
           {
+            opts: {},
             fn: 'reactify',
-            opts: {}
+            fnOpts: {}
           }
         ]
       },
@@ -46,8 +57,9 @@ module.exports = {
         external: ['common'],
         transform: [
           {
+            opts: {},
             fn: 'reactify',
-            opts: {}
+            fnOpts: {}
           }
         ]
 
