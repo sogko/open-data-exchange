@@ -4,12 +4,11 @@ var _ = require('lodash');
 var karma = require('karma').server;
 var config = require('../config');
 
-require('./build-client');
-
 /**
  * Build and run unit tests
  */
-gulp.task('test:unit', ['build-client:test'], function (done) {
+//gulp.task('test:unit', ['build-client:test'], function (done) {
+gulp.task('test:unit', function (done) {
   karma.start(_.assign({}, config.karma.unit, { singleRun: true }), done);
 });
 //gulp.task('test:midway', function (done) {

@@ -8,7 +8,8 @@ var config = require('../config');
 /**
  * Run server app (ExpressJS) through nodemon so that we can restart the server automatically upon any changes core server files
  */
-gulp.task('nodemon', ['build'], function taskNodemon(cb) {
+//gulp.task('nodemon', ['build'], function taskNodemon(cb) {
+gulp.task('nodemon', function taskNodemon(cb) {
   var called = false;
   return nodemon({
     script: config.nodemon.script,

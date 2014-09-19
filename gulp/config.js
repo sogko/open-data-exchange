@@ -1,13 +1,6 @@
 'use strict';
 
 module.exports = {
-  sass: {
-    glob: [
-      'client/src/**/*.scss'
-    ],
-    // temporary intermediate folder for compiled files ready for build
-    dest: 'client/pre-dist/sass'
-  },
   jshint: {
     glob: [
       '*.js',
@@ -49,47 +42,10 @@ module.exports = {
       'server/**/*.js'
     ]
   },
-  buildClient: {
-    base: require('../client/config').build,
-    development: {
-      env: 'development',
-      watch: [
-        'client/src/**/*.js',
-        'client/src/**/*.jsx'
-      ],
-      skipBundles: ['common']
-    },
-    production: {
-      env: 'production'
-    },
-    test: {
-      env: 'test',
-      destDir: 'tests/build/client/dist/js',
-      skipBundles: ['common']
-    }
-  },
-  buildCSS: {
-    glob: [
-      'client/src/**/*.css',
-      'client/pre-dist/**/*.css',
-      '!client/src/static/vendor/**/*.css'
-    ],
-    filename: 'all.css',
-    dest: 'client/dist'
-  },
   karma: {
     unit: require('../tests/karma.unit.conf'),
     midway: require('../tests/karma.midway.conf'),
     e2e: require('../tests/karma.e2e.conf')
-  },
-  copyStaticAssets: {
-    glob: [
-      'client/src/static/**/*',
-      'client/src/**/*.html',
-      '!client/src/**/*.md',
-      '!client/src/**/*.scss'
-    ],
-    dest: './client/dist'
   },
   clean: {
     glob: [
